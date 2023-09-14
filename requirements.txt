@@ -1,0 +1,7 @@
+opencv-python
+pytorch
+torchvision
+flask
+sentence-transformers
+facenet-pytorch
+numpy
