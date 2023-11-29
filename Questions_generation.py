@@ -36,12 +36,18 @@ def generate_questions_answers(topic):
 
     return questions
 
+def generate_questions_answers_dummy():
+    from data import questions_and_answers
+    return questions_and_answers
+
 @app.route('/generate', methods=['GET'])
 def generate_topic_questions_answers():
     topic = request.args.get('topic')
     
-    questions_answers = generate_questions_answers(topic)
-    return jsonify({"topic": topic, "questions_answers": questions_answers})
+    # questions_answers = generate_questions_answers(topic)
+    # return jsonify({"topic": topic, "questions_answers": questions_answers})
+
+    return generate_questions_answers_dummy()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5008)
