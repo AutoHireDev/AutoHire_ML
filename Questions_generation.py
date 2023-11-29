@@ -5,7 +5,7 @@ import openai
 app = Flask(__name__)
 
 
-openai.api_key = "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"
+openai.api_key = os.getenv("OPENAI_KEY")
 
 def generate_questions_answers(topic):
 
