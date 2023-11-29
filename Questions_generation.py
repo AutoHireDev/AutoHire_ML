@@ -44,4 +44,4 @@ def generate_topic_questions_answers():
     return jsonify({"topic": topic, "questions_answers": questions_answers})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5008)
