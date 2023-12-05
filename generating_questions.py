@@ -17,7 +17,7 @@ def generate_questions_and_answers(topic):
         prompt=prompt,
         max_tokens=1000 
     )
-
+    print(response.choices[0])
     generated_text = response.choices[0].text
     print(generated_text)
     print(type(generated_text))
