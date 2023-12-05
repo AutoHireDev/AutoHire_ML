@@ -1,53 +1,33 @@
-import os
-from flask import Flask, request, jsonify
 import openai
+import json,os
+
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+openai.api_key = os.getenv("OPENAI_KEY") 
 
 app = Flask(__name__)
+CORS(app)
 
-
-openai.api_key = os.getenv("OPENAI_KEY")
-
-def generate_questions_answers(topic):
-
-    prompt = f"Generate questions and answers about {topic}. Q:"
-
+def generate_questions_and_answers(topic):
+    prompt = f"Generate 2 interview questions and 3 possible answers about the {topic} and return the response as an array of python objects with question and answer_variants as properties."
 
     response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine="text-davinci-003",
         prompt=prompt,
-        max_tokens=100,
-        n=3  
+        max_tokens=1000 
     )
 
-
-    answers = [choice.text.strip() for choice in response.choices]
-
-
-    questions = []
-    for answer in answers:
-        question_response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=f"Q: {answer} A:",
-            max_tokens=50,
-            n=3  
-        )
-        question_variants = [choice.text.strip() for choice in question_response.choices]
-        questions.append({"question": answer, "answer_variants": question_variants})
-
-    return questions
-
-def generate_questions_answers_dummy():
-    from data import questions_and_answers
-    return questions_and_answers
+    generated_text = response.choices[0].text
+    return json.loads(generated_text)
 
 @app.route('/generate', methods=['GET'])
 def generate_topic_questions_answers():
     topic = request.args.get('topic')
-    
-    # questions_answers = generate_questions_answers(topic)
-    # return jsonify({"topic": topic, "questions_answers": questions_answers})
 
-    return generate_questions_answers_dummy()
+    questions_and_answers = generate_questions_and_answers(topic)
+    return questions_and_answers
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5008)
