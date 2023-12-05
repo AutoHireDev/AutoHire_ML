@@ -19,6 +19,10 @@ def generate_questions_and_answers(topic):
     )
 
     generated_text = response.choices[0].text
+    print(generated_text)
+    print(type(generated_text))
+    print(json.loads(generated_text))
+    print(type((json.loads(generated_text))))
     return json.loads(generated_text)
 
 @app.route('/generate', methods=['GET'])
