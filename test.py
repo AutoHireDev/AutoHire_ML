@@ -7,9 +7,11 @@ import pickle
 from Facerec import Facerec
 import torch
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import json
 
 app = Flask(__name__)
+CORS(app)
 sfr = Facerec()
 score = 0
 count = 0
