@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from sentence_transformers import SentenceTransformer, util
 import json
 
 app = Flask(__name__)
+CORS(app)
 model = SentenceTransformer("bert-base-nli-mean-tokens")
 
 
