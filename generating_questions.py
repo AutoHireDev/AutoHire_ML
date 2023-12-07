@@ -4,13 +4,13 @@ import json,os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-openai.api_key = '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'
+openai.api_key = os.getenv("OPENAI_KEY")
 
 app = Flask(__name__)
 CORS(app)
 
 def generate_questions_and_answers(topic):
-    prompt = f"Generate 2 interview questions and 3 possible answers variants for each question about the {topic} and return these questions and answers in JSON format only as an array of python objects with 'question' and 'answer_variants' as properties. Enclose property names in double quotes. Reply with only the answer in JSON form and include no other commentary strictly. Do not include double quoutes in answers."
+    prompt = f"Generate 2 interview questions and 3 possible answers for each question about the {topic} and return these questions and answers in JSON format only as an array of python objects with 'question' and 'answer_variants' as properties. Enclose property names in double quotes. Reply in JSON form and include no other commentary strictly. Do not include double quoutes in answers."
 
     response = openai.Completion.create(
         engine="gpt-3.5-turbo-instruct",
