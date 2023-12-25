@@ -1,32 +1,24 @@
-import openai
-import json,os
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
-openai.api_key = os.getenv("OPENAI_KEY")
+from sentence_transformers import SentenceTransformer, util
+import json
 
 app = Flask(__name__)
 CORS(app)
+model = SentenceTransformer("bert-base-nli-mean-tokens")
 
-def generate_questions_and_answers(topic):
-    prompt = f"Generate 2 interview questions and 3 possible answers for each question about the {topic} and return these questions and answers in JSON format only as an array of python objects with 'question' and 'answer_variants' as properties. Enclose property names in double quotes. Reply in JSON form and include no other commentary strictly. Do not include double quoutes in answers."
 
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo-instruct",
-        prompt=prompt,
-        max_tokens=1000 
-    )
-    
-    generated_text = response.choices[0].text
-    return json.loads(generated_text)
+@app.route("/api/sbert-encode", methods=["POST"])
+def sbert_encode():
+    data = request.get_json()
+    sentences = data["sentences"]
 
-@app.route('/generate', methods=['GET'])
-def generate_topic_questions_answers():
-    topic = request.args.get('topic')
+    sentence_embeddings = model.encode(sentences)
+    encoded_sentences = sentence_embeddings.tolist()
+    result = util.cos_sim(encoded_sentences[0], encoded_sentences[1])
 
-    questions_and_answers = generate_questions_and_answers(topic)
-    return questions_and_answers
+    return jsonify(result.tolist())
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5008)
+
+if __name__ == "__main__":
+    app.run()
